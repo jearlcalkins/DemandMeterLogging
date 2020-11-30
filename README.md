@@ -56,17 +56,39 @@ python3 log_eyedro.py -i 192.168.0.10 -p 2
 ^C
 1606754720, 839, 12052, 1200, 120, 955, 12056, 16400, 1888
 ```
+I hit the ctrl-C, stopping the application, but allowing it to take the last sample at: 1606754720
 
-### The 'ts' variable is a unix epoch timestamp. Please see https://en.wikipedia.org/wiki/Unix_time and https://en.wikipedia.org/wiki/Coordinated_Universal_Time for background on the 'ts' variable.
+### The 'ts' variable is a unix epoch timestamp
+Please see https://en.wikipedia.org/wiki/Unix_time and https://en.wikipedia.org/wiki/Coordinated_Universal_Time for background on the 'ts' variable. The first 'ts' is: *1606754706*, which is *2020-11-30T16:45:06+00:00* in time zone 0 (Greenwich, London UTC offset of 0)
 
 ### The 'apf' and 'bpf' variables:
-Power factor in milli-units, divide by 1000 to obtain pf
+Power factor in milli-units, divide by 1000 to obtain pf  
+839 is a PF of .839 or arccos(.839) = 32.96 degrees
 
-### The avoltage and bvoltage variables:
-voltage in mV meaning, divide by 1000 to obtain V
+### The 'avoltage' and 'bvoltage' variables:
+voltage in cV meaning, divide by 100 to obtain V  
+12054 = 120.54 volts
 
 ### The acurrent and bcurrent variables:
-current in mA, divide by 1000 to obtain Amps
+current in mA, divide by 1000 to obtain Amps  
+1200 = 1.2 amps
 
 ### The awattage and bwattage variables:
 power is in watts
+121 = 121 watts 
+
+## log_eyedro.py details
+
+log_eyedro.py is a python 3 application. You will likely need to install the requests module, to run this app. My development environments were Python 3.7.3 (debian container on chromebook metal & raspbian-debian on RPi hardware).  
+
+### timing for, when the API obtains power data samples
+The mytimer() function, sleeps, then returns, allowing the application to obtain power details via a restful API. If the API takes longer to process than the *sample_period* variable in the code, e.g. 2 seconds, mytimer() will hold-off for multiples of 2 seconds. My compute environments see ~3ms jitter-error, in the mytimer time-out, attributed to the operating system.
+
+### restful API to post and obtain the power variables
+The post_obtain_PfVIW() function executes a POST command to the eyedro web server's *:8080/getdata endpoint* e.g. 192.168.0.10:8080/getdata for my eyedro. If the POST is successful, returning a status = 200, the json dataset is returned as two python lists of variables, one for each power leg (left and right in the meter box, or red and black legs). one power leg list would look like and hold this: *[apf, avoltage, acurrent, awattage]* . In the event the POST application sees an error, takes longer to process or times-out, there will be no data points.
+
+### main loop
+The application continues to run, until the OS or the user interrupts or signals a kill. The application intercepts a kill signal, and completes the POST and writing the result to STDOUT, before gracefully exiting.
+
+## getdata endpoint reliability
+When executing the POST getdata API endpoint every 2 seconds over a 3.5 hour period, the application captured 5160 2second (period) data points out of an expected 6435 data points. This is roughly an 80% success rate for 2 second captures. I also noted, when changing the platform running the POST, the eyedro could take +10 seconds to recover and start running successfully. Anecdotally, 1 second captures are even more error prone. I'll gather more stats on POST success.
