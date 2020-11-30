@@ -56,7 +56,7 @@ python3 log_eyedro.py -i 192.168.0.10 -p 2
 ^C
 1606754720, 839, 12052, 1200, 120, 955, 12056, 16400, 1888
 ```
-I hit the ctrl-C, stopping the application, but allowing it to take the last sample at: 1606754720
+I hit the ctrl-C, stopping the application, but not till it gracefully took and logged the last sample at: 1606754720
 
 ### The 'ts' variable is a unix epoch timestamp
 Please see https://en.wikipedia.org/wiki/Unix_time and https://en.wikipedia.org/wiki/Coordinated_Universal_Time for background on the 'ts' variable. The first 'ts' is: *1606754706*, which is *2020-11-30T16:45:06+00:00* in time zone 0 (Greenwich, London UTC offset of 0)
