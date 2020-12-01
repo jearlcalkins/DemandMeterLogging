@@ -92,3 +92,7 @@ The application continues to run, until the OS or the user interrupts or signals
 
 ## getdata endpoint reliability
 When executing the POST getdata API endpoint every 2 seconds over a 3.5 hour period, the application captured 5160 2second (period) data points out of an expected 6435 data points. This is roughly an 80% success rate for 2 second captures. I also noted, when changing the platform running the POST, the eyedro could take +10 seconds to recover and start running successfully. Anecdotally, 1 second captures are even more error prone. I'll gather more stats on POST success.
+
+12-01-2020 update ... over night, at a 4 second period sample time, running the app for 7628 seconds yielded 1783 data points but it should have held 1907 data points. the getdata success was 93.49%. this RPI was also doing some scraping, so the getdata app was competing for compute. will try an older RPI, that is not running apps.
+
+
