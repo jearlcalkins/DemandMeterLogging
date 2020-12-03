@@ -91,11 +91,17 @@ The post_obtain_PfVIW() function executes a POST command to the eyedro web serve
 The application continues to run, until the OS or the user interrupts or signals a kill. The application intercepts a kill signal, and completes the POST and writing the result to STDOUT, before gracefully exiting.
 
 ## getdata endpoint reliability
-When executing the POST getdata API endpoint every 2 seconds over a 3.5 hour period, the application captured 5160 2second (period) data points out of an expected 6435 data points. This is roughly an 80% success rate for 2 second captures. I also noted, when changing the platform running the POST, the eyedro could take +10 seconds to recover and start running successfully. Anecdotally, 1 second captures are even more error prone. I'll gather more stats on POST success.
+Have been running the API logging application from two Raspberry Pi's. The .3 IP addy PI is an old "RPI 2 model B rev1" board, one of the older PI boards. The .100 IP addy PI is a newer "RPI 3 model B Plus rev 1" board. Both RPIs are ethernet connected via short drop cables to the switch-router. 
 
-12-01-2020 morning update ... over night, at a 4 second period sample time, running the app for 7628 seconds yielded 1783 data points but it should have held 1907 data points. the getdata success was 93.49%. this RPI was also doing some scraping, so the getdata app was competing for compute. will try an older RPI, that is not running apps.
+On an older .3 IP RPI, competing for resources. When executing the POST getdata API endpoint every 2 seconds over a 3.5 hour period, the application captured 5160 2second (period) data points out of an expected 6435 data points. This is roughly an 80% success rate for 2 second captures. I also noted, when changing the platform running the POST, the eyedro could take +10 seconds to recover and start running successfully. Anecdotally, 1 second captures are even more error prone. I'll gather more stats on POST success.
 
-12-01-2020 afternoon update ... ran the POST getdata API on one of the oldest RPIs, without any competing applications. running the app at 2 second sample period, for 6276 seconds yielded 3077 out of 3138 datasets ... successful at 98% ... POST failed or most likely, the POST took more than 2 seconds. initial take-away is; competing applications are a problem.
+12-01-2020 morning update ... over night, at a 4 second period sample time, running the app for 7628 seconds yielded 1783 data points but it should have held 1907 data points. the getdata success was 93.49%. this older RPI was also doing some production web scraping, so the getdata app was competing for compute. will try the newer RPI, that is not running apps.
+
+12-01-2020 afternoon update ... ran the POST getdata API on the .100 RPI, without competing applications. running the app at 2 second sample period, for 6276 seconds yielded 3077 out of 3138 datasets ... successful at 98% ... POST failed or most likely, the POST took more than 2 seconds. initial take-away is; competing applications are a problem.
+
+12-03-2020 mid morning update ... ran the POST getdata API on the .100 RPI, without competing applications. running the app at 2 second sample period for 59,835 elapsed seconds yielded 29918 potential data points, but we only captured 29261 data points. our success rate is 97.8 successful.
+
+I'm starting to anayze the drop-outs for any time patterns.
 
 
 
